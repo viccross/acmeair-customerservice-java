@@ -79,7 +79,7 @@ spec:
           - name: PASSWORD
             value: password
           - name: MONGO_HOST
-            value: customer-db
+            value: acmeair-customer-db
           - name: SECURE_SERVICE_CALLS
             value: 'true'
 {{ if .Values.msb.enabled }}

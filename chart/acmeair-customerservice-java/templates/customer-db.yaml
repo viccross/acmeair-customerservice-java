@@ -4,8 +4,8 @@ kind: Service
 metadata:
   creationTimestamp: null
   labels:
-    service: customer-db
-  name: customer-db
+    service: acmeair-customer-db
+  name: acmeair-customer-db
 spec:
   ports:
   - name: "27017"
@@ -13,7 +13,7 @@ spec:
     protocol: TCP
     targetPort: 27017
   selector:
-    service: customer-db
+    service: acmeair-customer-db
 status:
   loadBalancer: {}
 ---
@@ -21,7 +21,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   creationTimestamp: null
-  name: customer-db
+  name: acmeair-customer-db
 spec:
   replicas: 1
   strategy: {}
@@ -29,11 +29,11 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        service: customer-db
+        service: acmeair-customer-db
     spec:
       containers:
       - image: mongo
-        name: customer-db
+        name: acmeair-customer-db
         ports:
         - containerPort: 27017
           protocol: TCP

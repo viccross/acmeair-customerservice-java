@@ -3,7 +3,7 @@
 replicaCount: 1
 revisionHistoryLimit: 1
 image:
-  repository: customerservice-java
+  repository: acmeair-customerservice-java
   tag: latest
   pullPolicy: IfNotPresent
   resources:
@@ -11,8 +11,8 @@ image:
       cpu: 200m
       memory: 300Mi
 service:
-  name: customer-service
-  type: ClusterIP 
+  name: acmeair-customer-service
+  type: ClusterIP
   servicePort: 9080
   servicePortHttps: 9443
 ingress:
@@ -40,4 +40,4 @@ istio:
   enabled: false
   weight: 100
 msb:
-  enabled: false  
+  enabled: false

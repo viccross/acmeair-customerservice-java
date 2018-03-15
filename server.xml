@@ -19,8 +19,8 @@
   
   <opentracingZipkin/>
   
-  <webApplication name="customerservice"
-        location="customerservice-java-2.0.0-SNAPSHOT.war"
+  <webApplication name="acmeair-customerservice"
+        location="acmeair-customerservice-java-2.0.0-SNAPSHOT.war"
         contextRoot="/" />
   <cdi12 enableImplicitBeanArchives="false"/>
 </server>
