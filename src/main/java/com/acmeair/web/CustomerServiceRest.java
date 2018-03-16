@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
@@ -56,8 +55,7 @@ public class CustomerServiceRest {
   private static final Logger logger = Logger.getLogger(CustomerServiceRest.class.getName());
     
   private static final JsonReaderFactory rfactory = Json.createReaderFactory(null);
-  private static final JsonBuilderFactory bFactory = Json.createBuilderFactory(null);
-    
+ 
   /**
    * Get customer info.
    */
@@ -93,7 +91,8 @@ public class CustomerServiceRest {
   @Path("/byid/{custid}")
   @Produces("text/plain")
   @Timed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=customerservice-java")
-  public Response putCustomer(CustomerInfo customer, @CookieParam("jwt_token") String jwtToken) {
+  public Response putCustomer(CustomerInfo customer, @CookieParam("jwt_token") String jwtToken,
+      @PathParam("custid") String customerid ) {
 
     String username = customer.get_id();       
     
@@ -220,7 +219,7 @@ public class CustomerServiceRest {
   }
 
   @GET
-  public Response checkStatus() {
+  public Response status() {
     return Response.ok("OK").build();
 
   }
