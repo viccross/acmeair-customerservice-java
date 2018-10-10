@@ -78,7 +78,7 @@ public class CustomerInfo implements Serializable {
     return _id;
   }
   
-  public void setId(String username) {
+  public void set_id(String username) {
     this._id = username;
   }
   
