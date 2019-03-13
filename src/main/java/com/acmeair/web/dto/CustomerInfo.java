@@ -42,10 +42,10 @@ public class CustomerInfo implements Serializable {
   private String status;
   
   @XmlElement(name = "total_miles")
-  private int totalMiles;
+  private int total_miles;
   
   @XmlElement(name = "miles_ytd")
-  private int milesYtd;
+  private int miles_ytd;
 
   @XmlElement(name = "address")
   private AddressInfo address;
@@ -67,8 +67,8 @@ public class CustomerInfo implements Serializable {
     this._id = username;
     this.password = password;
     this.status = status;
-    this.totalMiles = totalMiles;
-    this.milesYtd = milesYtd;
+    this.total_miles = totalMiles;
+    this.miles_ytd = milesYtd;
     this.address = address;
     this.phoneNumber = phoneNumber;
     this.phoneNumberType = phoneNumberType;
@@ -98,20 +98,20 @@ public class CustomerInfo implements Serializable {
     this.status = status;
   }
   
-  public int getTotalMiles() {
-    return totalMiles;
+  public int getTotal_miles() {
+    return total_miles;
   }
   
-  public void setTotalMiles(int totalMiles) {
-    this.totalMiles = totalMiles;
+  public void setTotal_miles(int totalMiles) {
+    this.total_miles = totalMiles;
   }
   
-  public int getMilesYtd() {
-    return milesYtd;
+  public int getMiles_ytd() {
+    return miles_ytd;
   }
 
   public void setMilesYtd(int milesYtd) {
-    this.milesYtd = milesYtd;
+    this.miles_ytd = milesYtd;
   }
 
   public String getPhoneNumber() {
@@ -141,8 +141,8 @@ public class CustomerInfo implements Serializable {
   @Override
   public String toString() {
     return "Customer [id=" + _id + ", password=" + password + ", status="
-        + status + ", total_miles=" + totalMiles + ", miles_ytd="
-        + milesYtd + ", address=" + address + ", phoneNumber="
+        + status + ", total_miles=" + total_miles + ", miles_ytd="
+        + miles_ytd + ", address=" + address + ", phoneNumber="
         + phoneNumber + ", phoneNumberType=" + phoneNumberType + "]";
   }
 
@@ -172,7 +172,7 @@ public class CustomerInfo implements Serializable {
     } else if (!_id.equals(other._id)) {
       return false;
     }
-    if (milesYtd != other.milesYtd) {
+    if (miles_ytd != other.miles_ytd) {
       return false;
     }
     if (password == null) {
@@ -195,7 +195,7 @@ public class CustomerInfo implements Serializable {
     if (status != other.status) {
       return false;
     }
-    if (totalMiles != other.totalMiles) {
+    if (total_miles != other.total_miles) {
       return false;
     }
     return true;

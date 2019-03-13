@@ -16,17 +16,11 @@
 
 package com.acmeair.web;
 
-import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -36,26 +30,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import com.acmeair.service.CustomerService;
-import com.acmeair.utils.ConfigPropertyHelper;
-import com.acmeair.utils.SecurityUtils;
-import com.acmeair.web.dto.AddressInfo;
 import com.acmeair.web.dto.CustomerInfo;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 @Path("/")
 public class CustomerServiceRest {
 
   @Inject
-  CustomerService customerService;
+  private JsonWebToken jwt;
   
   @Inject
-  ConfigPropertyHelper configProperties;
+  CustomerService customerService;
   
   private static final Logger logger = Logger.getLogger(CustomerServiceRest.class.getName());
-  private static final JsonReaderFactory rfactory = Json.createReaderFactory(null);
-  private static final String ADMIN = "admin";
-
+  
   /**
    * Get customer info.
    */
@@ -63,6 +53,7 @@ public class CustomerServiceRest {
   @Path("/byid/{custid}")
   @Produces("text/plain")
   @Timed(name="com.acmeair.web.CustomerServiceRest.getCustomer", tags = "app=customerservice-java")
+  @RolesAllowed({"user"})
   public Response getCustomer(@PathParam("custid") String customerid, 
       @HeaderParam("Authorization") String authHeader) {
     if (logger.isLoggable(Level.FINE)) {
@@ -72,7 +63,7 @@ public class CustomerServiceRest {
     try {
       // make sure the user isn't trying to update a customer other than the one
       // currently logged in
-      if (!validateJwtForUserCall(customerid, authHeader)) {
+      if (!customerid.equals(jwt.getSubject())) {
         return Response.status(Response.Status.FORBIDDEN).build();
       }
 
@@ -91,15 +82,17 @@ public class CustomerServiceRest {
   @Path("/byid/{custid}")
   @Produces("text/plain")
   @Timed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=customerservice-java")
+  @RolesAllowed({"user"})
   public Response putCustomer(CustomerInfo customer, @HeaderParam("Authorization") String jwtToken,
       @PathParam("custid") String customerid ) {
 
-    String username = customer.get_id();       
-
-    if (!validateJwtForUserCall(username, jwtToken)) {
+    // make sure the user isn't trying to update a customer other than the one
+    // currently logged in
+    if (!customerid.equals(jwt.getSubject())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
-
+    
+    String username = customer.get_id();           
     String customerFromDb = customerService
         .getCustomerByUsernameAndPassword(username, customer.getPassword());
 
@@ -114,6 +107,8 @@ public class CustomerServiceRest {
 
     customerService.updateCustomer(username, customer);
 
+    System.out.println(customer);
+    
     // Retrieve the latest results
     customerFromDb = customerService
         .getCustomerByUsernameAndPassword(username, customer.getPassword());
@@ -121,112 +116,9 @@ public class CustomerServiceRest {
     return Response.ok(customerFromDb).build();
   }
 
-  /**
-   * Validate user/password.
-   */
-  @POST
-  @Path("/validateid")
-  @Consumes({ "application/x-www-form-urlencoded" })
-  @Produces("application/json")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.validateCustomer", tags = "app=customerservice-java")
-  public LoginResponse validateCustomer(@HeaderParam("Authorization") String authHeader, 
-      @FormParam("login") String login,
-      @FormParam("password") String password) {
-
-    if (logger.isLoggable(Level.FINE)) {
-      logger.fine("validateid : login " + login + " password " + password);
-    }
-
-    if (!validateJwtForServiceCall(authHeader)) {
-      return null;
-    }
-
-    if (!customerService.isPopulated()) {
-      throw new RuntimeException("Customer DB has not been populated");
-    }
-
-    Boolean validCustomer = customerService.validateCustomer(login, password);
-
-    return new LoginResponse(validCustomer); 
-  }
-
-  /**
-   * Update reward miles.
-   */
-  @POST
-  @Path("/updateCustomerTotalMiles/{custid}")
-  @Consumes({ "application/x-www-form-urlencoded" })
-  @Produces("application/json")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.updateCustomerTotalMiles", tags = "app=customerservice-java")
-  public MilesResponse updateCustomerTotalMiles(@HeaderParam("Authorization") String authHeader, 
-      @PathParam("custid") String customerid,
-      @FormParam("miles") Long miles) {
-
-    if (!validateJwtForServiceCall(authHeader)) {
-      return null;
-    }
-
-    JsonReader jsonReader = rfactory.createReader(new StringReader(customerService
-        .getCustomerByUsername(customerid)));
-
-    JsonObject customerJson = jsonReader.readObject();
-    jsonReader.close();
-
-
-    JsonObject addressJson = customerJson.getJsonObject("address");
-
-    String streetAddress2 = null;
-
-    if (addressJson.get("streetAddress2") != null 
-        && !addressJson.get("streetAddress2").toString().equals("null")) {
-      streetAddress2 = addressJson.getString("streetAddress2");
-    }
-
-    AddressInfo addressInfo = new AddressInfo(addressJson.getString("streetAddress1"), 
-        streetAddress2,
-        addressJson.getString("city"), 
-        addressJson.getString("stateProvince"),
-        addressJson.getString("country"),
-        addressJson.getString("postalCode"));
-
-    Long milesUpdate = customerJson.getInt("total_miles") + miles;
-    CustomerInfo customerInfo = new CustomerInfo(customerid, 
-        null, 
-        customerJson.getString("status"),
-        milesUpdate.intValue(), 
-        customerJson.getInt("miles_ytd"), 
-        addressInfo, 
-        customerJson.getString("phoneNumber"),
-        customerJson.getString("phoneNumberType"));
-
-    customerService.updateCustomer(customerid, customerInfo);
-
-    return new MilesResponse(milesUpdate);
-  }
-
   @GET
   public Response status() {
     return Response.ok("OK").build();
 
-  }
-  
-  private boolean validateJwtForUserCall(String user, String authHeader) {
-    if (!configProperties.secureUserCalls()) {
-      return true;
-    }
-    return validateJwt(user, authHeader);
-  }
-  
-  private boolean validateJwtForServiceCall(String authHeader) {
-    if (!configProperties.secureServiceCalls()) {
-      return true;
-    }
-    return validateJwt(ADMIN, authHeader);
-    
-  }
-      
-  private boolean validateJwt(String user, String authHeader) {
-    String jwtToken = authHeader.substring(7);
-    return SecurityUtils.validateJwt(user,jwtToken);
   }
 }
