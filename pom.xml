@@ -247,6 +247,11 @@
       <version>1.0</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.jwt</groupId>
+      <artifactId>microprofile-jwt-auth-api</artifactId>
+      <version>1.1.1</version>
+    </dependency>
     <!-- Configure javametrics monitoring Dependencies -->
     <dependency>
       <groupId>com.ibm.runtimetools</groupId>
