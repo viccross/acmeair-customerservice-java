@@ -106,8 +106,6 @@ public class CustomerServiceRest {
     }
 
     customerService.updateCustomer(username, customer);
-
-    System.out.println(customer);
     
     // Retrieve the latest results
     customerFromDb = customerService
