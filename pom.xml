@@ -216,24 +216,20 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<scope>compile</scope>
-			<version>3.1.1</version>
+			<version>3.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>bson</artifactId>
 			<scope>compile</scope>
-			<version>3.1.1</version>
+			<version>3.10.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.auth0</groupId>
-			<artifactId>java-jwt</artifactId>
-			<version>3.1.0</version>
-		</dependency>
+		
 		<!-- microprofile-1.2 -->
 		<dependency>
 			<groupId>org.eclipse.microprofile.config</groupId>
 			<artifactId>microprofile-config-api</artifactId>
-			<version>1.1</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -248,6 +244,11 @@
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+          <groupId>org.eclipse.microprofile.jwt</groupId>
+          <artifactId>microprofile-jwt-auth-api</artifactId>
+          <version>1.1.1</version>
+        </dependency>
 		<!-- Configure javametrics monitoring Dependencies -->
 		<dependency>
 			<groupId>com.ibm.runtimetools</groupId>
