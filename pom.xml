@@ -273,7 +273,6 @@
 	</dependencies>
 	<!-- Generators, Microclimate profiles -->
 	<profiles>
-
 		<profile>
 			<id>runnable</id>
 			<properties>

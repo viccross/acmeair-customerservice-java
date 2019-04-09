@@ -50,7 +50,7 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
 
   @Override
   public Long count() {
-    return customer.count();
+    return customer.countDocuments();
   }
 
   @Override
@@ -99,8 +99,8 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
     }
     customer.updateOne(eq("_id", customerInfo.get_id()),
         combine(set("status", customerInfo.getStatus()), 
-            set("total_miles", customerInfo.getTotalMiles()),
-            set("miles_ytd", customerInfo.getMilesYtd()), 
+            set("total_miles", customerInfo.getTotal_miles()),
+            set("miles_ytd", customerInfo.getMiles_ytd()), 
             set("address", address),
             set("phoneNumber", customerInfo.getPhoneNumber()),
             set("phoneNumberType", customerInfo.getPhoneNumberType())));
@@ -138,7 +138,7 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
       return true;
     }
         
-    if (customer.count() > 0) {
+    if (customer.countDocuments() > 0) {
       isPopulated = true;
       return true;
     } else {
