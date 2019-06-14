@@ -89,5 +89,7 @@ public abstract class CustomerService {
   public abstract String getServiceType();
 
   public abstract boolean isPopulated();
+
+  public abstract boolean isConnected();
   
 }
