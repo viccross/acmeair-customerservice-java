@@ -52,10 +52,9 @@ public class CustomerServiceRest {
   @GET
   @Path("/byid/{custid}")
   @Produces("text/plain")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.getCustomer", tags = "app=customerservice-java")
+  @Timed(name="com.acmeair.web.CustomerServiceRest.getCustomer", tags = "app=acmeair-customerservice-java")
   @RolesAllowed({"user"})
-  public Response getCustomer(@PathParam("custid") String customerid, 
-      @HeaderParam("Authorization") String authHeader) {
+  public Response getCustomer(@PathParam("custid") String customerid) {
     if (logger.isLoggable(Level.FINE)) {
       logger.fine("getCustomer : userid " + customerid);
     }
@@ -81,10 +80,9 @@ public class CustomerServiceRest {
   @POST
   @Path("/byid/{custid}")
   @Produces("text/plain")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=customerservice-java")
+  @Timed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=acemair-customerservice-java")
   @RolesAllowed({"user"})
-  public Response putCustomer(CustomerInfo customer, @HeaderParam("Authorization") String jwtToken,
-      @PathParam("custid") String customerid ) {
+  public Response putCustomer(CustomerInfo customer, @PathParam("custid") String customerid ) {
 
     // make sure the user isn't trying to update a customer other than the one
     // currently logged in
