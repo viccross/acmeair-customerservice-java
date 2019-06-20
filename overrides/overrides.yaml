@@ -10,8 +10,15 @@ ssl:
 
 ingress:
   enabled: true
-  rewriteTarget: "/"
-  path: "/customer"
+  rewriteTarget: "/$2"
+  path: "/customer(/|$)(.*)"
+  host: ""
+  secretName: ""
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+    ingress.kubernetes.io/ssl-redirect: "false"
+    ingress.kubernetes.io/connection-proxy-header: "keep-alive"
 
 env:
   jvmArgs: "-DMONGO_HOST=acmeair-customer-db -Dmp.jwt.verify.publickey.location=http://acmeair-auth-service:9080/getJwk"
