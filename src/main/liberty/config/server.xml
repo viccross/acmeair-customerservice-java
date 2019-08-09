@@ -2,8 +2,8 @@
 <server description="new server">
   <!-- Enable features -->
   <featureManager>
-    <feature>usr:opentracingZipkin-0.31</feature>
-    <feature>microProfile-2.2</feature>
+   <feature>usr:opentracingZipkin-0.31</feature>
+    <feature>microProfile-3.0</feature>
     <feature>jndi-1.0</feature>
     <feature>jsp-2.3</feature>
     <feature>servlet-4.0</feature>
@@ -20,6 +20,6 @@
 	<opentracingZipkin />
 
 	<webApplication name="acmeair-customerservice"
-		location="acmeair-customerservice-java-2.0.0-SNAPSHOT.war"
+		location="acmeair-customerservice-java-3.0.0-SNAPSHOT.war"
 		contextRoot="/" />
 </server>

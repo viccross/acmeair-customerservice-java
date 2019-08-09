@@ -16,25 +16,9 @@
 
 package com.acmeair.web;
 
-import com.acmeair.config.CustomerConfiguration;
-import com.acmeair.config.CustomerLoaderRest;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
 public class CustomerServiceApp extends Application {
-  
-  /**
-   * JAX-RS Services.
-  */
-  public Set<Class<?>> getClasses() {
-    return new HashSet<Class<?>>(
-        Arrays.asList(CustomerServiceRest.class, CustomerConfiguration.class, 
-            CustomerLoaderRest.class,CustomerServiceRestInternal.class,HealthCheckRest.class));
-  }
 }

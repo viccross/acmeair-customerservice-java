@@ -145,4 +145,9 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
       return false;
     }
   }
+
+  @Override
+  public boolean isConnected() {
+    return (customer.countDocuments() >= 0);
+  }
 }

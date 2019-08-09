@@ -60,7 +60,7 @@ public class CustomerServiceRestInternal {
   @Path("/validateid")
   @Consumes({ "application/x-www-form-urlencoded" })
   @Produces("application/json")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.validateCustomer", tags = "app=customerservice-java")
+  @Timed(name="com.acmeair.web.CustomerServiceRest.validateCustomer", tags = "app=acmeair-customerservice-java")
   public LoginResponse validateCustomer( 
       @FormParam("login") String login,
       @FormParam("password") String password) {
@@ -85,7 +85,7 @@ public class CustomerServiceRestInternal {
   @Path("/updateCustomerTotalMiles/{custid}")
   @Consumes({ "application/x-www-form-urlencoded" })
   @Produces("application/json")
-  @Timed(name="com.acmeair.web.CustomerServiceRest.updateCustomerTotalMiles", tags = "app=customerservice-java")
+  @Timed(name="com.acmeair.web.CustomerServiceRest.updateCustomerTotalMiles", tags = "app=acmeair-customerservice-java")
   public MilesResponse updateCustomerTotalMiles(
       @PathParam("custid") String customerid,
       @FormParam("miles") Long miles) {
