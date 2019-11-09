@@ -16,15 +16,16 @@
 
 package com.acmeair.service;
 
+import com.acmeair.web.dto.AddressInfo;
 import com.acmeair.web.dto.CustomerInfo;
-
-import java.io.StringReader;
 
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
+import java.io.StringReader;
+import java.util.List;
 
 public abstract class CustomerService {
   protected static final int DAYS_TO_ALLOW_SESSION = 1;
@@ -33,12 +34,11 @@ public abstract class CustomerService {
   @Inject
   protected KeyGenerator keyGenerator; 
  
-  public abstract void createCustomer(String username, String password, String status, 
-      int totalMiles, int milesYtd, String phoneNumber, String phoneNumberType, 
-      String addressJson);
+  public abstract void createCustomer(CustomerInfo customerInfo);
 
-  public abstract String createAddress(String streetAddress1, String streetAddress2, 
-      String city, String stateProvince, String country, String postalCode);
+  public abstract void createCustomers(List<CustomerInfo> customers);
+
+  public abstract String createAddress(AddressInfo addressInfo);
 
   public abstract void updateCustomer(String username, CustomerInfo customerJson);
 

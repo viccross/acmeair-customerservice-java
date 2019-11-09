@@ -17,13 +17,15 @@
 package com.acmeair.loader;
 
 import com.acmeair.service.CustomerService;
-
-import java.util.logging.Logger;
+import com.acmeair.web.dto.AddressInfo;
+import com.acmeair.web.dto.CustomerInfo;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class CustomerLoader {
@@ -50,7 +52,7 @@ public class CustomerLoader {
    * Load customer db.
    */
   public String loadCustomerDb(long numCustomers) {
-
+    List<CustomerInfo> customers = new ArrayList();
     double length = 0;
     try {
      
@@ -58,13 +60,12 @@ public class CustomerLoader {
       long start = System.currentTimeMillis(); 
       customerService.dropCustomers();
 
-      String addressJson =  "{streetAddress1 : \"123 Main St.\", streetAddress2 :null, city: "
-          + "\"Anytown\", stateProvince: \"NC\", country: \"USA\", postalCode: \"27617\"}";
-
+      AddressInfo addressInfo =  new AddressInfo("123 Main St.", null, "Anytown", "NC", "USA", "27617");
       for (long ii = 0; ii < numCustomers; ii++) {
-        customerService.createCustomer("uid" + ii + "@email.com", "password", "GOLD", 0, 0, 
-            "919-123-4567", "BUSINESS", addressJson);
+        customers.add(new CustomerInfo("uid" + ii + "@email.com", "password", "GOLD", 0, 0,
+                addressInfo, "919-123-4567", "BUSINESS"));
       }
+      customerService.createCustomers(customers);
 
       long stop = System.currentTimeMillis();
       logger.info("Finished loading in " + (stop - start) / 1000.0 + " seconds");
