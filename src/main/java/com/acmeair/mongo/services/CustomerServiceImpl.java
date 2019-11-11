@@ -16,28 +16,32 @@
 
 package com.acmeair.mongo.services;
 
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-
 import com.acmeair.mongo.ConnectionManager;
 import com.acmeair.mongo.MongoConstants;
 import com.acmeair.service.CustomerService;
+import com.acmeair.web.dto.AddressInfo;
 import com.acmeair.web.dto.CustomerInfo;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ConnectionDescription;
+import org.bson.Document;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.bson.Document;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 @ApplicationScoped
 public class CustomerServiceImpl extends CustomerService implements MongoConstants {
 
   private MongoCollection<Document> customer;
   private Boolean isPopulated = false;
+  private final int WRITE_BATCH_SIZE = ConnectionDescription.getDefaultMaxWriteBatchSize();
     
   @Inject
   ConnectionManager connectionManager;
@@ -54,49 +58,34 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
   }
 
   @Override
-  public void createCustomer(String username, String password, String status, 
-      int totalMiles, int milesYtd,
-      String phoneNumber, String phoneNumberType, String addressJson) {
-
-    new Document();
-    Document customerDoc = new Document("_id", username)
-        .append("password", password)
-        .append("status", status)
-        .append("total_miles", totalMiles).append("miles_ytd", milesYtd)
-        .append("address", Document.parse(addressJson)).append("phoneNumber", phoneNumber)
-        .append("phoneNumberType", phoneNumberType);
-
+  public void createCustomer(CustomerInfo customerInfo) {
+    Document customerDoc = parseCustomerInfo(customerInfo);
     customer.insertOne(customerDoc);
   }
 
   @Override
-  public String createAddress(String streetAddress1, String streetAddress2, String city,
-      String stateProvince, String country, String postalCode) {
-    Document addressDoc = new Document("streetAddress1", streetAddress1)
-        .append("city", city)
-        .append("stateProvince", stateProvince)
-        .append("country", country)
-        .append("postalCode", postalCode);
-    
-    if (streetAddress2 != null) {
-      addressDoc.append("streetAddress2", streetAddress2);
+  public void createCustomers(List<CustomerInfo> customers) {
+    List<Document> documents = new ArrayList(WRITE_BATCH_SIZE);
+    for (int i=0; i<customers.size(); i++) {
+      documents.add(parseCustomerInfo(customers.get(i)));
+      if ( i % WRITE_BATCH_SIZE == 0 ) {
+        customer.insertMany(documents);
+        documents.clear();
+      }
     }
-    
+    if(!documents.isEmpty()) customer.insertMany(documents);
+  }
+
+  @Override
+  public String createAddress(AddressInfo addressInfo) {
+    Document addressDoc = parseAddressInfo(addressInfo);
     return addressDoc.toJson();
   }
 
   @Override
   public void updateCustomer(String username, CustomerInfo customerInfo) {
+    Document address = parseAddressInfo(customerInfo.getAddress());
 
-    Document address = new Document("streetAddress1", customerInfo.getAddress().getStreetAddress1())
-        .append("city", customerInfo.getAddress().getCity())
-        .append("stateProvince", customerInfo.getAddress().getStateProvince())
-        .append("country", customerInfo.getAddress().getCountry())
-        .append("postalCode", customerInfo.getAddress().getPostalCode());
-
-    if (customerInfo.getAddress().getStreetAddress2() != null) {
-      address.append("streetAddress2", customerInfo.getAddress().getStreetAddress2());
-    }
     customer.updateOne(eq("_id", customerInfo.get_id()),
         combine(set("status", customerInfo.getStatus()), 
             set("total_miles", customerInfo.getTotal_miles()),
@@ -149,5 +138,23 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
   @Override
   public boolean isConnected() {
     return (customer.countDocuments() >= 0);
+  }
+
+  private Document parseCustomerInfo(CustomerInfo customerInfo) {
+    return new Document("_id", customerInfo.get_id())
+            .append("password", customerInfo.getPassword())
+            .append("status", customerInfo.getPassword())
+            .append("total_miles", customerInfo.getTotal_miles()).append("miles_ytd", customerInfo.getMiles_ytd())
+            .append("address", parseAddressInfo(customerInfo.getAddress()))
+            .append("phoneNumber", customerInfo.getPhoneNumber())
+            .append("phoneNumberType", customerInfo.getPhoneNumberType());
+  }
+  private Document parseAddressInfo(AddressInfo addressInfo) {
+    return new Document("streetAddress1", addressInfo.getStreetAddress1())
+            .append("streetAddress2", addressInfo.getStreetAddress2())
+            .append("city", addressInfo.getCity())
+            .append("stateProvince", addressInfo.getStateProvince())
+            .append("country", addressInfo.getCountry())
+            .append("postalCode", addressInfo.getPostalCode());
   }
 }
