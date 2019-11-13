@@ -92,6 +92,11 @@ spec:
       labels:
         name: acmeair-customer-db
     spec:
+      volumes:
+        - name: acmeair-customer-db-1
+          emptyDir: {}
+        - name: acmeair-customer-db-2
+          emptyDir: {}
       containers:
       - image: mongo
         name: acmeair-customer-db
@@ -99,5 +104,10 @@ spec:
         - containerPort: 27017
           protocol: TCP
         resources: {}
+        volumeMounts:
+          - name: acmeair-customer-db-1
+            mountPath: /data/configdb
+          - name: acmeair-customer-db-2
+            mountPath: /data/db
       restartPolicy: Always
 status: {}
