@@ -1,9 +1,12 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: acmeair-customerservice
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: acmeair-customer-deployment
   template:
     metadata:
       labels:
@@ -29,7 +32,7 @@ spec:
         - name: SECURE_SERVICE_CALLS
           value: 'true'
         - name: JVM_ARGS
-          value: "-Dmp.jwt.verify.publickey.location=http://acmeair-auth-service:9080/getJwk"
+          value: "-Dmp.jwt.verify.publickey.location=http://acmeair-auth-service:9080/auth/getJwk"
         readinessProbe:
           httpGet:
             path: /health
@@ -69,23 +72,26 @@ spec:
     protocol: TCP
     targetPort: 27017
   selector:
-    service: acmeair-customer-db
+    name: acmeair-customer-db
 status:
   loadBalancer: {}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
   name: acmeair-customer-db
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: acmeair-customer-db
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        service: acmeair-customer-db
+        name: acmeair-customer-db
     spec:
       containers:
       - image: mongo
