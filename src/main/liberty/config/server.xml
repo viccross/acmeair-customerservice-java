@@ -2,24 +2,19 @@
 <server description="new server">
   <!-- Enable features -->
   <featureManager>
-   <feature>usr:opentracingZipkin-0.31</feature>
     <feature>microProfile-3.0</feature>
-    <feature>jndi-1.0</feature>
-    <feature>jsp-2.3</feature>
-    <feature>servlet-4.0</feature>
-    <feature>managedBeans-1.0</feature>
-    <feature>websocket-1.1</feature>
   </featureManager>
 
-	<!-- To access this server from a remote client add a host attribute to 
-		the following element, e.g. host="*" -->
-	<httpEndpoint id="defaultHttpEndpoint" host="*"
-		httpPort="9080" httpsPort="9443">
-	</httpEndpoint>
+  <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+  <httpEndpoint id="defaultHttpEndpoint" host="*"
+              httpPort="9080" httpsPort="9443">
+  </httpEndpoint>
 
-	<opentracingZipkin />
+  <quickStartSecurity userName="${env.USERNAME}" userPassword="${env.PASSWORD}" />
 
-	<webApplication name="acmeair-customerservice"
-		location="acmeair-customerservice-java-3.0.0-SNAPSHOT.war"
-		contextRoot="/" />
+  <webApplication name="acmeair-customerservice" location="acmeair-customerservice-java-3.0.war" contextRoot="/customer">
+    <!-- enable visibility to third party apis -->
+    <classloader apiTypeVisibility="api,ibm-api,spec,stable,third-party"/>
+  </webApplication>
+
 </server>
