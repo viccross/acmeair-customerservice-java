@@ -203,6 +203,12 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongo-java-driver</artifactId>
         <scope>compile</scope>
