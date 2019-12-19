@@ -44,7 +44,6 @@ public class CustomerLoader {
    */
   
   public String queryLoader() {
-    
     return numCustomersToLoad.toString();
   }
 
@@ -52,7 +51,7 @@ public class CustomerLoader {
    * Load customer db.
    */
   public String loadCustomerDb(long numCustomers) {
-    List<CustomerInfo> customers = new ArrayList();
+    List<CustomerInfo> customers = new ArrayList<CustomerInfo>();
     double length = 0;
     try {
      
