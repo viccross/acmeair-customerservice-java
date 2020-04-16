@@ -65,7 +65,7 @@ public class CustomerServiceImpl extends CustomerService implements MongoConstan
 
   @Override
   public void createCustomers(List<CustomerInfo> customers) {
-    List<Document> documents = new ArrayList(WRITE_BATCH_SIZE);
+    List<Document> documents = new ArrayList<Document>(WRITE_BATCH_SIZE);
     for (int i=0; i<customers.size(); i++) {
       documents.add(parseCustomerInfo(customers.get(i)));
       if ( i % WRITE_BATCH_SIZE == 0 ) {
