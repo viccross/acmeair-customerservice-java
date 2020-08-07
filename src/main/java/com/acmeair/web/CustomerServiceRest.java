@@ -79,7 +79,7 @@ public class CustomerServiceRest {
   @POST
   @Path("/byid/{custid}")
   @Produces("text/plain")
-  @SimplyTimed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=acemair-customerservice-java")
+  @SimplyTimed(name="com.acmeair.web.CustomerServiceRest.putCustomer", tags = "app=acmemair-customerservice-java")
   @RolesAllowed({"user"})
   public Response putCustomer(CustomerInfo customer, @PathParam("custid") String customerid ) {
 
