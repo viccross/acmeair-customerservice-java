@@ -31,8 +31,8 @@ spec:
           value: acmeair-customer-db
         - name: SECURE_SERVICE_CALLS
           value: 'true'
-        - name: JVM_ARGS
-          value: "-Dmp.jwt.verify.publickey.location=http://acmeair-auth-service:9080/auth/getJwk"
+        - name: ACMEAIR_STACKAA_AUTH_URL
+          value: "http://acmeair-auth-service:9080/auth"
         readinessProbe:
           httpGet:
             path: /health
