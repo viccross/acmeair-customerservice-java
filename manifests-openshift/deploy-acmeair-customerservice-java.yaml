@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: acmeair-customerservice-java
-        image: acmeair-customerservice-java:latest
+        image: quay.io/powercloud/acmeair-customerservice-java:1.0
         ports:
           - containerPort: 9080
           - containerPort: 9443
@@ -98,7 +98,7 @@ spec:
         - name: acmeair-customer-db-2
           emptyDir: {}
       containers:
-      - image: mongo
+      - image: ibmcom/icp-mongodb-ppc64le:4.0.12
         name: acmeair-customer-db
         ports:
         - containerPort: 27017
